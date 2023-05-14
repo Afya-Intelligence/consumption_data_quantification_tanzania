@@ -1,0 +1,2898 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Peter Boshe">
+
+<title>Forecasting for Tanga Sample Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="demo forecasting version 2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="demo forecasting version 2_files/libs/quarto-html/quarto.js"></script>
+<script src="demo forecasting version 2_files/libs/quarto-html/popper.min.js"></script>
+<script src="demo forecasting version 2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="demo forecasting version 2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="demo forecasting version 2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="demo forecasting version 2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="demo forecasting version 2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="demo forecasting version 2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="demo forecasting version 2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#business-problems" id="toc-business-problems" class="nav-link active" data-scroll-target="#business-problems">Business Problem(s)</a>
+  <ul>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
+  <li><a href="#data-extraction" id="toc-data-extraction" class="nav-link" data-scroll-target="#data-extraction">Data Extraction</a></li>
+  <li><a href="#data-cleaning-and-preprocessing" id="toc-data-cleaning-and-preprocessing" class="nav-link" data-scroll-target="#data-cleaning-and-preprocessing">Data Cleaning and Preprocessing</a>
+  <ul>
+  <li><a href="#pre-processing-the-data" id="toc-pre-processing-the-data" class="nav-link" data-scroll-target="#pre-processing-the-data">Pre-processing the data</a></li>
+  </ul></li>
+  <li><a href="#data-quality" id="toc-data-quality" class="nav-link" data-scroll-target="#data-quality">Data Quality</a>
+  <ul>
+  <li><a href="#check-for-missing-variables" id="toc-check-for-missing-variables" class="nav-link" data-scroll-target="#check-for-missing-variables">Check for missing variables</a></li>
+  <li><a href="#check-for-duplicated-rows" id="toc-check-for-duplicated-rows" class="nav-link" data-scroll-target="#check-for-duplicated-rows">Check for duplicated rows</a></li>
+  <li><a href="#inconsistency-in-naming-periods" id="toc-inconsistency-in-naming-periods" class="nav-link" data-scroll-target="#inconsistency-in-naming-periods">Inconsistency in naming periods</a></li>
+  <li><a href="#inconsistency-in-naming-products-and-product-codes" id="toc-inconsistency-in-naming-products-and-product-codes" class="nav-link" data-scroll-target="#inconsistency-in-naming-products-and-product-codes">Inconsistency in naming products and product codes</a></li>
+  <li><a href="#checking-completeness-of-data" id="toc-checking-completeness-of-data" class="nav-link" data-scroll-target="#checking-completeness-of-data">Checking completeness of data</a></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">Exploratory data analysis (EDA)</a>
+  <ul>
+  <li><a href="#distribution-of-amc-and-checking-for-outliers" id="toc-distribution-of-amc-and-checking-for-outliers" class="nav-link" data-scroll-target="#distribution-of-amc-and-checking-for-outliers">Distribution of amc and checking for outliers</a></li>
+  <li><a href="#create-a-function-for-replacing-outliers-with-median" id="toc-create-a-function-for-replacing-outliers-with-median" class="nav-link" data-scroll-target="#create-a-function-for-replacing-outliers-with-median">Create a function for replacing outliers with median</a></li>
+  <li><a href="#imbalance-in-distribution-of-facilities" id="toc-imbalance-in-distribution-of-facilities" class="nav-link" data-scroll-target="#imbalance-in-distribution-of-facilities">Imbalance in distribution of facilities</a></li>
+  <li><a href="#order-quantity-vs-amc" id="toc-order-quantity-vs-amc" class="nav-link" data-scroll-target="#order-quantity-vs-amc">Order Quantity Vs AMC</a></li>
+  <li><a href="#amc-per-status" id="toc-amc-per-status" class="nav-link" data-scroll-target="#amc-per-status">AMC per status</a></li>
+  <li><a href="#order-quantity-vs-status" id="toc-order-quantity-vs-status" class="nav-link" data-scroll-target="#order-quantity-vs-status">Order Quantity vs Status</a></li>
+  <li><a href="#most-ordered-products" id="toc-most-ordered-products" class="nav-link" data-scroll-target="#most-ordered-products">Most Ordered Products</a></li>
+  <li><a href="#total-orders-over-time-with-outliers-replaced-by-median" id="toc-total-orders-over-time-with-outliers-replaced-by-median" class="nav-link" data-scroll-target="#total-orders-over-time-with-outliers-replaced-by-median">total orders over time with outliers replaced by median</a></li>
+  </ul></li>
+  <li><a href="#sample-modelling" id="toc-sample-modelling" class="nav-link" data-scroll-target="#sample-modelling">Sample modelling</a>
+  <ul>
+  <li><a href="#subsetting-for-modelling" id="toc-subsetting-for-modelling" class="nav-link" data-scroll-target="#subsetting-for-modelling">Subsetting for modelling</a></li>
+  <li><a href="#sample-model-comparison" id="toc-sample-model-comparison" class="nav-link" data-scroll-target="#sample-model-comparison">Sample model comparison</a></li>
+  <li><a href="#inspecting-an-arima-model-fitted-to-the-data-selected" id="toc-inspecting-an-arima-model-fitted-to-the-data-selected" class="nav-link" data-scroll-target="#inspecting-an-arima-model-fitted-to-the-data-selected">Inspecting an Arima model fitted to the data selected</a></li>
+  <li><a href="#arima-model-on-the-data" id="toc-arima-model-on-the-data" class="nav-link" data-scroll-target="#arima-model-on-the-data">arima model on the data</a></li>
+  <li><a href="#ets-model-on-the-data" id="toc-ets-model-on-the-data" class="nav-link" data-scroll-target="#ets-model-on-the-data">ETS model on the data</a></li>
+  <li><a href="#arima-model-with-212" id="toc-arima-model-with-212" class="nav-link" data-scroll-target="#arima-model-with-212">Arima model with (2,1,2)</a>
+  <ul class="collapse">
+  <li><a href="#using-box-cox-transformation" id="toc-using-box-cox-transformation" class="nav-link" data-scroll-target="#using-box-cox-transformation">using box cox transformation</a></li>
+  </ul></li>
+  <li><a href="#ets-using-log-transformation" id="toc-ets-using-log-transformation" class="nav-link" data-scroll-target="#ets-using-log-transformation">ets using log transformation</a></li>
+  <li><a href="#arima-using-log-transformation" id="toc-arima-using-log-transformation" class="nav-link" data-scroll-target="#arima-using-log-transformation">arima using log transformation</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Forecasting for Tanga Sample Data</h1>
+<p class="subtitle lead">with complete facility data</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Peter Boshe </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="business-problems" class="level2">
+<h2 class="anchored" data-anchor-id="business-problems">Business Problem(s)</h2>
+<ul>
+<li>forecast the amc so as to calculate the amount needed to restock to 4 months</li>
+<li>forecast the amount of product to be ordered</li>
+</ul>
+<p>Assumptions;</p>
+<ul>
+<li>95% confidence interval</li>
+</ul>
+<section id="methodology" class="level3">
+<h3 class="anchored" data-anchor-id="methodology">Methodology</h3>
+<p>Things to do;</p>
+<ul>
+<li>we will be forecasting for amc</li>
+<li>use other variables to check for outliers and other analysis</li>
+<li>Forecasting will be done for different levels
+<ul>
+<li>by individual group</li>
+<li>by facility</li>
+<li>by facility types</li>
+<li>by different ordering periods(bi-monthly, in 4 month aggregates, annually)</li>
+</ul></li>
+<li>Build a demo shiny app UI with user interactivity</li>
+</ul>
+</section>
+<section id="data-extraction" class="level3">
+<h3 class="anchored" data-anchor-id="data-extraction">Data Extraction</h3>
+<p>We downloaded our data from eLMIS R&amp;R bi-monthly reports for Tanga region for the years 2020 to 2022, the records start from the march-april reporting period.</p>
+<div class="cell">
+
+</div>
+</section>
+<section id="data-cleaning-and-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-and-preprocessing">Data Cleaning and Preprocessing</h3>
+<section id="pre-processing-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="pre-processing-the-data">Pre-processing the data</h4>
+<p>During the pre-processing process we;</p>
+<ul>
+<li>selected the columns of interest,</li>
+<li>clean the white spaces and ensure that all the monthly data have uniform spelling</li>
+<li>performed factor ordering to make sure that the months are ordered chronologically</li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "pre-process successful..."</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="data-quality" class="level3">
+<h3 class="anchored" data-anchor-id="data-quality">Data Quality</h3>
+<p>Due to the nature of the data received, The R&amp;R reports seem to have a lot of inconsistency that may be caused by the human element of data recording leading to having multiple strings indicating the same data points.</p>
+<!-- #### Summary of the processed data -->
+<!-- ```{r} -->
+<!-- df |>  -->
+<!--   skimr::skim() -->
+<!-- ``` -->
+<section id="check-for-missing-variables" class="level4">
+<h4 class="anchored" data-anchor-id="check-for-missing-variables">Check for missing variables</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check for missing variables</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># df |&gt; </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   vis_miss(warn_large_data = F)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(df, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          line       facility       district           zone    month_range 
+             0              0              0              0              0 
+      ext_year        product            amc physical_count            mos 
+             0              0              2              0              0 
+order_quantity         status          group           year 
+             3              0              0              0 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(order_quantity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 14
+   line facility        district zone  month_range ext_year product          amc
+  &lt;dbl&gt; &lt;fct&gt;           &lt;fct&gt;    &lt;fct&gt; &lt;fct&gt;       &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1   253 BAMBA MAVENGERO Mkinga   Tanga may - june  2020     Magnesium Tri…   400
+2 12938 MWANDUSI        Mkinga   Tanga may - june  2020     Magnesium Tri…    NA
+3 12942 MWANDUSI        Mkinga   Tanga may - june  2020     Methylated sp…    NA
+# ℹ 6 more variables: physical_count &lt;dbl&gt;, mos &lt;dbl&gt;, order_quantity &lt;dbl&gt;,
+#   status &lt;fct&gt;, group &lt;fct&gt;, year &lt;fct&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="check-for-duplicated-rows" class="level4">
+<h4 class="anchored" data-anchor-id="check-for-duplicated-rows">Check for duplicated rows</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check for duplicates</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">duplicated</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<ul>
+<li>we do not have missing data</li>
+<li>we do not have duplicated data</li>
+</ul>
+</section>
+<section id="inconsistency-in-naming-periods" class="level4">
+<h4 class="anchored" data-anchor-id="inconsistency-in-naming-periods">Inconsistency in naming periods</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df_imported <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">separate</span>(period, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"month_range"</span>,<span class="st">"ext_year"</span>), <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">s(?=[^</span><span class="sc">\\</span><span class="st">s]+$)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(month_range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+   month_range       n
+   &lt;chr&gt;         &lt;int&gt;
+ 1 April - May   13929
+ 2 Aug - Sept    14687
+ 3 Dec - Jan     15135
+ 4 Feb - March   13543
+ 5 Jan - Feb     31890
+ 6 July - Aug    17066
+ 7 July - August 20643
+ 8 June - July   11239
+ 9 March - April 35723
+10 May - June    38786
+11 Nov - Dec     24191
+12 Nov -Dec      29612
+13 Oct - Nov      9567
+14 Sept - Oct    50900</code></pre>
+</div>
+</div>
+<ul>
+<li>we have a data quality issue where the time periods do not have a uniform conventional naming structure</li>
+<li>before cleaning we have 14 period ranges due to data recording</li>
+</ul>
+</section>
+<section id="inconsistency-in-naming-products-and-product-codes" class="level4">
+<h4 class="anchored" data-anchor-id="inconsistency-in-naming-products-and-product-codes">Inconsistency in naming products and product codes</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_imported <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(product_name, <span class="st">"Tenofovir"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(product_name, product_code_name) <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li>there is a possibility that the product codes might be changed</li>
+<li>there is a possibility of duplicates by renaming the same products</li>
+<li>there is no consistency in product coding and naming (ie. same product name might have different product code like 10011380AB, 10010022AB both named Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD) Tablet (300/300/50) mg )</li>
+</ul>
+</section>
+<section id="checking-completeness-of-data" class="level4">
+<h4 class="anchored" data-anchor-id="checking-completeness-of-data">Checking completeness of data</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(df<span class="sc">$</span>facility))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 347</code></pre>
+</div>
+</div>
+<ul>
+<li>for data quality checks we need to confirm that the number of facilities match the reality</li>
+<li>with the new data we have 347 facilities</li>
+</ul>
+</section>
+</section>
+<section id="exploratory-data-analysis-eda" class="level3">
+<h3 class="anchored" data-anchor-id="exploratory-data-analysis-eda">Exploratory data analysis (EDA)</h3>
+<section id="distribution-of-amc-and-checking-for-outliers" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-of-amc-and-checking-for-outliers">Distribution of amc and checking for outliers</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check for outliers</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(amc)) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/eda-1.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">log</span>(amc))) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/eda-2.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Tukey's method to numeric columns</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># amc_outliers &lt;- boxplot.stats(df$amc, coef = 1.5)$out</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify which rows contain outliers</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># amc_outlier_rows &lt;- apply(df, 1, function(row) any(row %in% amc_outliers))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li>we can see that the distribution of the amc is heavily right skewed</li>
+<li>we might need to do some transformation for better forecasting, eg log transformation</li>
+<li>we have 6549 outliers and 14160 when the amc outliers are filtered out.</li>
+</ul>
+</section>
+<section id="create-a-function-for-replacing-outliers-with-median" class="level4">
+<h4 class="anchored" data-anchor-id="create-a-function-for-replacing-outliers-with-median">Create a function for replacing outliers with median</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create a function that replaces outliers with median values</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>replace_outliers_with_median <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">coef =</span> <span class="fl">1.5</span>) {</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  q1 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.25</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  q3 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.75</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  iqr <span class="ot">&lt;-</span> q3 <span class="sc">-</span> q1</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  fence_low <span class="ot">&lt;-</span> q1 <span class="sc">-</span> coef <span class="sc">*</span> iqr</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  fence_high <span class="ot">&lt;-</span> q3 <span class="sc">+</span> coef <span class="sc">*</span> iqr</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  x[x <span class="sc">&lt;</span> fence_low <span class="sc">|</span> x <span class="sc">&gt;</span> fence_high] <span class="ot">&lt;-</span> <span class="fu">median</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="imbalance-in-distribution-of-facilities" class="level4">
+<h4 class="anchored" data-anchor-id="imbalance-in-distribution-of-facilities">Imbalance in distribution of facilities</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">tabyl</span>(facility, group) <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div id="otojlophnv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#otojlophnv) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#otojlophnv) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#otojlophnv) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#otojlophnv) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#otojlophnv) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#otojlophnv) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#otojlophnv) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#otojlophnv) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#otojlophnv) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#otojlophnv) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#otojlophnv) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#otojlophnv) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#otojlophnv) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#otojlophnv) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#otojlophnv) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#otojlophnv) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#otojlophnv) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#otojlophnv) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#otojlophnv) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#otojlophnv) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#otojlophnv) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#otojlophnv) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#otojlophnv) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#otojlophnv) .gt_left {
+  text-align: left;
+}
+
+:where(#otojlophnv) .gt_center {
+  text-align: center;
+}
+
+:where(#otojlophnv) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#otojlophnv) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#otojlophnv) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#otojlophnv) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#otojlophnv) .gt_super {
+  font-size: 65%;
+}
+
+:where(#otojlophnv) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#otojlophnv) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#otojlophnv) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#otojlophnv) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#otojlophnv) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#otojlophnv) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#otojlophnv) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="facility">facility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a">a</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="b">b</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="facility" class="gt_row gt_center">BAGA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">731</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BOHELOI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1103</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BUMBA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">769</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BUMBULI MISSION</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">566</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">FUNTA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1333</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HAMBALAWEI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">388</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KANGAGAI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1287</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIKUMBI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">548</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILOLE</td>
+<td headers="a" class="gt_row gt_right">1271</td>
+<td headers="b" class="gt_row gt_right">485</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIVILICHA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1226</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIVINGO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">939</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEHANGALA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">977</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEKANGA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1292</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEMKOMOLE</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">610</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LONGOI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1117</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LUKOZI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1009</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LUSHOTO</td>
+<td headers="a" class="gt_row gt_right">138</td>
+<td headers="b" class="gt_row gt_right">2743</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MADALA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1000</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGAMBA</td>
+<td headers="a" class="gt_row gt_right">1454</td>
+<td headers="b" class="gt_row gt_right">1794</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGEREZA LUSHOTO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">441</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGEREZA MNG'ARO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">478</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGUZONI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1215</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAHEZANGULU</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">995</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAKANKA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">885</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAKANYA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1342</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAKOLE</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1656</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAKOSE</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1159</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MALIBWI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">924</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MALINDI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1505</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAMBO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">860</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MANOLO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1288</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MASEREKA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">942</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAVULUI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1101</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Mavumo</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">912</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAYO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1183</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAYO KISIWANI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">974</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBARAMO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1712</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBARU</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1532</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBUZII</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">702</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MGWASHI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1816</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MIGAMBO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">782</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MILINGANO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">917</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKUNDI YA MTAE</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1342</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MLALO</td>
+<td headers="a" class="gt_row gt_right">896</td>
+<td headers="b" class="gt_row gt_right">1296</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MLESA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1184</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MLOLA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">2071</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MNAZI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">2368</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MNG'ARO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1091</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MPALALU</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1335</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MPANGA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1052</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MPONDE MTAE</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">991</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MPONDE VUGA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1179</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSALE</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1244</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSAMAKA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">817</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MTAE</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">808</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NGWELO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1050</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">RANGWI GOVERNMENT</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1894</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SHUME</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1147</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SONI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1709</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SUNGA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1250</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Tamota</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1767</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TEMA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">945</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TEWE</td>
+<td headers="a" class="gt_row gt_right">532</td>
+<td headers="b" class="gt_row gt_right">687</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Togotwe</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">803</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">VITI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">713</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">VUGA</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">1171</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBELEI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">711</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKUNKI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">311</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NYWELO</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">638</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">AMANI</td>
+<td headers="a" class="gt_row gt_right">2056</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BALANG'A</td>
+<td headers="a" class="gt_row gt_right">930</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BAMBA MAVENGERO</td>
+<td headers="a" class="gt_row gt_right">838</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BOGOLWA</td>
+<td headers="a" class="gt_row gt_right">887</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BOMA</td>
+<td headers="a" class="gt_row gt_right">678</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BONDO</td>
+<td headers="a" class="gt_row gt_right">672</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BOZA</td>
+<td headers="a" class="gt_row gt_right">605</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BUIKO</td>
+<td headers="a" class="gt_row gt_right">1119</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BULWA</td>
+<td headers="a" class="gt_row gt_right">262</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BUNGU</td>
+<td headers="a" class="gt_row gt_right">893</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BUSHIRI</td>
+<td headers="a" class="gt_row gt_right">968</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BWEMBWERA</td>
+<td headers="a" class="gt_row gt_right">1042</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">CHAMTUI</td>
+<td headers="a" class="gt_row gt_right">579</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">CHANGALIKWA</td>
+<td headers="a" class="gt_row gt_right">643</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Chanika</td>
+<td headers="a" class="gt_row gt_right">914</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">CHEKELEI</td>
+<td headers="a" class="gt_row gt_right">731</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">CHOGO</td>
+<td headers="a" class="gt_row gt_right">774</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">CHONGOLEANI</td>
+<td headers="a" class="gt_row gt_right">756</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DALUNI</td>
+<td headers="a" class="gt_row gt_right">867</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DEPOT</td>
+<td headers="a" class="gt_row gt_right">1092</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DINDIRA</td>
+<td headers="a" class="gt_row gt_right">785</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DODA</td>
+<td headers="a" class="gt_row gt_right">1003</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DUGA</td>
+<td headers="a" class="gt_row gt_right">1626</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DUGA MAFORONI</td>
+<td headers="a" class="gt_row gt_right">918</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DUGA SIGAYA</td>
+<td headers="a" class="gt_row gt_right">732</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">F.F.U</td>
+<td headers="a" class="gt_row gt_right">995</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">GEMAI</td>
+<td headers="a" class="gt_row gt_right">471</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">GENDAGENDA</td>
+<td headers="a" class="gt_row gt_right">799</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">GITU</td>
+<td headers="a" class="gt_row gt_right">643</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">GOHA</td>
+<td headers="a" class="gt_row gt_right">733</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">GOMBERO</td>
+<td headers="a" class="gt_row gt_right">1345</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">GUMBONNEKA</td>
+<td headers="a" class="gt_row gt_right">773</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HALE SISI KWA SISI</td>
+<td headers="a" class="gt_row gt_right">977</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HANDENI PRISON</td>
+<td headers="a" class="gt_row gt_right">796</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HANDENI TC</td>
+<td headers="a" class="gt_row gt_right">2124</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HOROHORO</td>
+<td headers="a" class="gt_row gt_right">956</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HOROHORO BOARDER</td>
+<td headers="a" class="gt_row gt_right">1425</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KABUKU</td>
+<td headers="a" class="gt_row gt_right">1721</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KABUKU NDANI</td>
+<td headers="a" class="gt_row gt_right">962</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KALALANI</td>
+<td headers="a" class="gt_row gt_right">949</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KAMBAI</td>
+<td headers="a" class="gt_row gt_right">637</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KANG'ATA</td>
+<td headers="a" class="gt_row gt_right">826</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KANGE</td>
+<td headers="a" class="gt_row gt_right">929</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KANGE JWTZ</td>
+<td headers="a" class="gt_row gt_right">1135</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KERENGE</td>
+<td headers="a" class="gt_row gt_right">470</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIBAFUTA</td>
+<td headers="a" class="gt_row gt_right">1041</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIBAONI</td>
+<td headers="a" class="gt_row gt_right">916</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIBIBONI</td>
+<td headers="a" class="gt_row gt_right">1222</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIBINDU</td>
+<td headers="a" class="gt_row gt_right">411</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIBIRASHI</td>
+<td headers="a" class="gt_row gt_right">882</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KICHANGANI</td>
+<td headers="a" class="gt_row gt_right">983</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KICHEBA</td>
+<td headers="a" class="gt_row gt_right">727</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIDELEKO</td>
+<td headers="a" class="gt_row gt_right">2004</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIGOMBE</td>
+<td headers="a" class="gt_row gt_right">1300</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIGONGOI</td>
+<td headers="a" class="gt_row gt_right">730</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIGONGOMAWE</td>
+<td headers="a" class="gt_row gt_right">853</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIGURUSIMBA</td>
+<td headers="a" class="gt_row gt_right">817</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIGWASI</td>
+<td headers="a" class="gt_row gt_right">714</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIJUNGU MOTO</td>
+<td headers="a" class="gt_row gt_right">771</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIKOKWE</td>
+<td headers="a" class="gt_row gt_right">738</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIKUNDE</td>
+<td headers="a" class="gt_row gt_right">888</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILANGA</td>
+<td headers="a" class="gt_row gt_right">586</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILINDI</td>
+<td headers="a" class="gt_row gt_right">2406</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILULU</td>
+<td headers="a" class="gt_row gt_right">838</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILULU DUGA</td>
+<td headers="a" class="gt_row gt_right">864</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILWA</td>
+<td headers="a" class="gt_row gt_right">878</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIMANG'A</td>
+<td headers="a" class="gt_row gt_right">1145</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIMBE</td>
+<td headers="a" class="gt_row gt_right">1027</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIPUMBWI</td>
+<td headers="a" class="gt_row gt_right">869</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIRARE</td>
+<td headers="a" class="gt_row gt_right">738</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KISIWANI</td>
+<td headers="a" class="gt_row gt_right">1108</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KISOSORA</td>
+<td headers="a" class="gt_row gt_right">1759</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIWANDA</td>
+<td headers="a" class="gt_row gt_right">589</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KIZARA</td>
+<td headers="a" class="gt_row gt_right">614</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KOMKOLE B</td>
+<td headers="a" class="gt_row gt_right">696</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KOMKONGA</td>
+<td headers="a" class="gt_row gt_right">1229</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KOMSALA</td>
+<td headers="a" class="gt_row gt_right">774</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KOMSANGA</td>
+<td headers="a" class="gt_row gt_right">565</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KONJE</td>
+<td headers="a" class="gt_row gt_right">1460</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KOROGWE TC</td>
+<td headers="a" class="gt_row gt_right">2259</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KULASI</td>
+<td headers="a" class="gt_row gt_right">874</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWABADA</td>
+<td headers="a" class="gt_row gt_right">659</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWACHAGA</td>
+<td headers="a" class="gt_row gt_right">737</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAFUNGO</td>
+<td headers="a" class="gt_row gt_right">729</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAKIBOMI</td>
+<td headers="a" class="gt_row gt_right">840</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAKIBUYU</td>
+<td headers="a" class="gt_row gt_right">927</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAKOMBO</td>
+<td headers="a" class="gt_row gt_right">594</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWALUGURU</td>
+<td headers="a" class="gt_row gt_right">614</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAMBA</td>
+<td headers="a" class="gt_row gt_right">448</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAMNDOLWA</td>
+<td headers="a" class="gt_row gt_right">1252</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAMNGUMI</td>
+<td headers="a" class="gt_row gt_right">618</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAMSISI</td>
+<td headers="a" class="gt_row gt_right">1960</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWANDUGWA</td>
+<td headers="a" class="gt_row gt_right">374</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWANGAHU</td>
+<td headers="a" class="gt_row gt_right">1036</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWANJEKANYOTA</td>
+<td headers="a" class="gt_row gt_right">1114</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWANKONJE</td>
+<td headers="a" class="gt_row gt_right">1080</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWARAGURU</td>
+<td headers="a" class="gt_row gt_right">988</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWASHEMSHI</td>
+<td headers="a" class="gt_row gt_right">920</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWASUNGA</td>
+<td headers="a" class="gt_row gt_right">848</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWATANGO</td>
+<td headers="a" class="gt_row gt_right">545</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEDIBOMA</td>
+<td headers="a" class="gt_row gt_right">826</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEDITILIBE</td>
+<td headers="a" class="gt_row gt_right">767</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEDIZINGA</td>
+<td headers="a" class="gt_row gt_right">846</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEINGOMA</td>
+<td headers="a" class="gt_row gt_right">470</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEISAPO</td>
+<td headers="a" class="gt_row gt_right">536</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEKIVU</td>
+<td headers="a" class="gt_row gt_right">771</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEMAZANDU</td>
+<td headers="a" class="gt_row gt_right">699</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEMKOLE</td>
+<td headers="a" class="gt_row gt_right">881</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWENANGU</td>
+<td headers="a" class="gt_row gt_right">879</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWINJI</td>
+<td headers="a" class="gt_row gt_right">606</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LANGONI</td>
+<td headers="a" class="gt_row gt_right">1140</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LEWA</td>
+<td headers="a" class="gt_row gt_right">642</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LULAGO</td>
+<td headers="a" class="gt_row gt_right">1032</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LUSANE</td>
+<td headers="a" class="gt_row gt_right">651</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LWANDE</td>
+<td headers="a" class="gt_row gt_right">788</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LWENGERA</td>
+<td headers="a" class="gt_row gt_right">1011</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MABOKWENI</td>
+<td headers="a" class="gt_row gt_right">1071</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MACHUI</td>
+<td headers="a" class="gt_row gt_right">1684</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MADANGA</td>
+<td headers="a" class="gt_row gt_right">754</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MADEBE</td>
+<td headers="a" class="gt_row gt_right">903</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAFISA</td>
+<td headers="a" class="gt_row gt_right">855</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAFULETA</td>
+<td headers="a" class="gt_row gt_right">594</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAFULILA</td>
+<td headers="a" class="gt_row gt_right">866</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAFURIKO</td>
+<td headers="a" class="gt_row gt_right">1479</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGAONI</td>
+<td headers="a" class="gt_row gt_right">1101</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGATI</td>
+<td headers="a" class="gt_row gt_right">850</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGAZINI</td>
+<td headers="a" class="gt_row gt_right">950</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGILA</td>
+<td headers="a" class="gt_row gt_right">840</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGODA</td>
+<td headers="a" class="gt_row gt_right">998</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGODI</td>
+<td headers="a" class="gt_row gt_right">709</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGOMA</td>
+<td headers="a" class="gt_row gt_right">1354</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAGOROTO</td>
+<td headers="a" class="gt_row gt_right">783</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAHENGE</td>
+<td headers="a" class="gt_row gt_right">689</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAJENGO</td>
+<td headers="a" class="gt_row gt_right">1585</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAKORORA</td>
+<td headers="a" class="gt_row gt_right">2005</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAKUMBA</td>
+<td headers="a" class="gt_row gt_right">1023</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAKUYUNI</td>
+<td headers="a" class="gt_row gt_right">881</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MANDERA</td>
+<td headers="a" class="gt_row gt_right">314</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MANDERA KIVA</td>
+<td headers="a" class="gt_row gt_right">491</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MANGA</td>
+<td headers="a" class="gt_row gt_right">500</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MANKA</td>
+<td headers="a" class="gt_row gt_right">798</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MANUNDU PRISON</td>
+<td headers="a" class="gt_row gt_right">426</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MANZA</td>
+<td headers="a" class="gt_row gt_right">660</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAPOJONI</td>
+<td headers="a" class="gt_row gt_right">746</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MARAMBA</td>
+<td headers="a" class="gt_row gt_right">1436</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MARUNGU</td>
+<td headers="a" class="gt_row gt_right">849</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MASAGALU</td>
+<td headers="a" class="gt_row gt_right">656</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MASAIKA</td>
+<td headers="a" class="gt_row gt_right">1096</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MASATU</td>
+<td headers="a" class="gt_row gt_right">1167</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MASHEWA</td>
+<td headers="a" class="gt_row gt_right">1914</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAWENI PRISON</td>
+<td headers="a" class="gt_row gt_right">958</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAYOMBONI</td>
+<td headers="a" class="gt_row gt_right">721</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAZINDE</td>
+<td headers="a" class="gt_row gt_right">835</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAZINGARA</td>
+<td headers="a" class="gt_row gt_right">572</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBAGHAI</td>
+<td headers="a" class="gt_row gt_right">748</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBAGWI</td>
+<td headers="a" class="gt_row gt_right">583</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBAMBARA</td>
+<td headers="a" class="gt_row gt_right">418</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MEKA</td>
+<td headers="a" class="gt_row gt_right">701</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MGAMBO JKT</td>
+<td headers="a" class="gt_row gt_right">630</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MGERA</td>
+<td headers="a" class="gt_row gt_right">669</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MGILA</td>
+<td headers="a" class="gt_row gt_right">649</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MGOMBEZI</td>
+<td headers="a" class="gt_row gt_right">1418</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MHAMBA</td>
+<td headers="a" class="gt_row gt_right">1031</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MHINDURO</td>
+<td headers="a" class="gt_row gt_right">746</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MIKANJUNI</td>
+<td headers="a" class="gt_row gt_right">1773</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MISALAI</td>
+<td headers="a" class="gt_row gt_right">557</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MISIMA</td>
+<td headers="a" class="gt_row gt_right">1358</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MISOZWE</td>
+<td headers="a" class="gt_row gt_right">703</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MJESANI</td>
+<td headers="a" class="gt_row gt_right">1520</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKALAMO</td>
+<td headers="a" class="gt_row gt_right">2340</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKANYAGENI</td>
+<td headers="a" class="gt_row gt_right">1195</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKATA</td>
+<td headers="a" class="gt_row gt_right">1456</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKINDI</td>
+<td headers="a" class="gt_row gt_right">662</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKINGA</td>
+<td headers="a" class="gt_row gt_right">1537</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKINGA LEO</td>
+<td headers="a" class="gt_row gt_right">713</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKOMAZI</td>
+<td headers="a" class="gt_row gt_right">830</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKUMBARA</td>
+<td headers="a" class="gt_row gt_right">819</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKUYU</td>
+<td headers="a" class="gt_row gt_right">894</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKUZI</td>
+<td headers="a" class="gt_row gt_right">1091</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MKWAJA</td>
+<td headers="a" class="gt_row gt_right">1024</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MLUNGUI</td>
+<td headers="a" class="gt_row gt_right">404</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MNYUZI</td>
+<td headers="a" class="gt_row gt_right">1176</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MOA</td>
+<td headers="a" class="gt_row gt_right">518</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MOMBO</td>
+<td headers="a" class="gt_row gt_right">1582</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MPALE</td>
+<td headers="a" class="gt_row gt_right">990</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MPIRANI</td>
+<td headers="a" class="gt_row gt_right">1335</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSAJE</td>
+<td headers="a" class="gt_row gt_right">1509</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSAMBIAZI</td>
+<td headers="a" class="gt_row gt_right">934</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSENTE</td>
+<td headers="a" class="gt_row gt_right">696</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSOMELA</td>
+<td headers="a" class="gt_row gt_right">926</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSWAHA DARAJANI</td>
+<td headers="a" class="gt_row gt_right">1000</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MSWAKI</td>
+<td headers="a" class="gt_row gt_right">1039</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MTINDIRO</td>
+<td headers="a" class="gt_row gt_right">791</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MTONGA</td>
+<td headers="a" class="gt_row gt_right">1010</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MUHEZA</td>
+<td headers="a" class="gt_row gt_right">861</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MUMBWI</td>
+<td headers="a" class="gt_row gt_right">850</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MVUNGWE</td>
+<td headers="a" class="gt_row gt_right">850</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWAKIDILA</td>
+<td headers="a" class="gt_row gt_right">1780</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWAKIJEMBE</td>
+<td headers="a" class="gt_row gt_right">570</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWANDUSI</td>
+<td headers="a" class="gt_row gt_right">837</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWANYUMBA</td>
+<td headers="a" class="gt_row gt_right">798</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWANZANGE</td>
+<td headers="a" class="gt_row gt_right">917</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWARONGO</td>
+<td headers="a" class="gt_row gt_right">1376</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWERA</td>
+<td headers="a" class="gt_row gt_right">1395</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MZERI</td>
+<td headers="a" class="gt_row gt_right">821</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MZUNDU</td>
+<td headers="a" class="gt_row gt_right">704</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NANYOGIE</td>
+<td headers="a" class="gt_row gt_right">519</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NEGERO</td>
+<td headers="a" class="gt_row gt_right">793</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NGAMIANI</td>
+<td headers="a" class="gt_row gt_right">2186</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NGARANI</td>
+<td headers="a" class="gt_row gt_right">1006</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NGOMENI-UMBA</td>
+<td headers="a" class="gt_row gt_right">709</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NGUVUMALI</td>
+<td headers="a" class="gt_row gt_right">1156</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NKUMBA</td>
+<td headers="a" class="gt_row gt_right">1255</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PAGWI</td>
+<td headers="a" class="gt_row gt_right">614</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PANDE</td>
+<td headers="a" class="gt_row gt_right">1142</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PANGANI</td>
+<td headers="a" class="gt_row gt_right">1551</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PONGWE</td>
+<td headers="a" class="gt_row gt_right">2268</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">POTWE</td>
+<td headers="a" class="gt_row gt_right">790</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PRISON</td>
+<td headers="a" class="gt_row gt_right">419</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ROZIMINIUM</td>
+<td headers="a" class="gt_row gt_right">176</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Safi</td>
+<td headers="a" class="gt_row gt_right">63</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SANGE</td>
+<td headers="a" class="gt_row gt_right">1032</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SAUNYI</td>
+<td headers="a" class="gt_row gt_right">570</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SEGERA</td>
+<td headers="a" class="gt_row gt_right">1163</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SINDENI</td>
+<td headers="a" class="gt_row gt_right">993</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SONGA</td>
+<td headers="a" class="gt_row gt_right">1037</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SONGE</td>
+<td headers="a" class="gt_row gt_right">1532</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ST. FRANCIS KWAMKONO</td>
+<td headers="a" class="gt_row gt_right">415</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ST. RAPHAEL</td>
+<td headers="a" class="gt_row gt_right">427</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">STAHABU</td>
+<td headers="a" class="gt_row gt_right">603</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SUWA</td>
+<td headers="a" class="gt_row gt_right">657</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TAMOTA</td>
+<td headers="a" class="gt_row gt_right">1749</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TANGA</td>
+<td headers="a" class="gt_row gt_right">3689</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TANGA CENTRAL</td>
+<td headers="a" class="gt_row gt_right">132</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TANGA CITY</td>
+<td headers="a" class="gt_row gt_right">1546</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TONGONI</td>
+<td headers="a" class="gt_row gt_right">1094</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TONGWE</td>
+<td headers="a" class="gt_row gt_right">1135</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TULIANI KWACHAGA</td>
+<td headers="a" class="gt_row gt_right">749</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TUMAINI</td>
+<td headers="a" class="gt_row gt_right">224</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">UBWARI</td>
+<td headers="a" class="gt_row gt_right">1211</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">VUGIRI</td>
+<td headers="a" class="gt_row gt_right">946</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">VUO</td>
+<td headers="a" class="gt_row gt_right">552</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">VYERU</td>
+<td headers="a" class="gt_row gt_right">615</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ZEGE</td>
+<td headers="a" class="gt_row gt_right">882</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ZIRAI</td>
+<td headers="a" class="gt_row gt_right">826</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">DRF - KOROGWE DC</td>
+<td headers="a" class="gt_row gt_right">1</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">VYADIGWA</td>
+<td headers="a" class="gt_row gt_right">743</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Korogwe District Council</td>
+<td headers="a" class="gt_row gt_right">777</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAMGWE</td>
+<td headers="a" class="gt_row gt_right">391</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Mavului</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">228</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBWEI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">450</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ZIMBILI</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">610</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MUHEZA DISTRICT</td>
+<td headers="a" class="gt_row gt_right">270</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">BANDARI</td>
+<td headers="a" class="gt_row gt_right">399</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWEDIKWAZU</td>
+<td headers="a" class="gt_row gt_right">539</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LENGUSERO</td>
+<td headers="a" class="gt_row gt_right">311</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LUKOLE</td>
+<td headers="a" class="gt_row gt_right">444</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MBULIZAGA</td>
+<td headers="a" class="gt_row gt_right">376</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">Msasa</td>
+<td headers="a" class="gt_row gt_right">913</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MTIMBWANI</td>
+<td headers="a" class="gt_row gt_right">414</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">NKALE</td>
+<td headers="a" class="gt_row gt_right">402</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ZENETI</td>
+<td headers="a" class="gt_row gt_right">632</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWAMSANGAZI</td>
+<td headers="a" class="gt_row gt_right">309</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LUGONGO ESTATE</td>
+<td headers="a" class="gt_row gt_right">365</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MARAMBA JKT</td>
+<td headers="a" class="gt_row gt_right">282</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MAZOLA KILIFI</td>
+<td headers="a" class="gt_row gt_right">528</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MGAMBO</td>
+<td headers="a" class="gt_row gt_right">575</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MTITI</td>
+<td headers="a" class="gt_row gt_right">361</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TAULA</td>
+<td headers="a" class="gt_row gt_right">344</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWALE</td>
+<td headers="a" class="gt_row gt_right">316</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MWAKIKOYA</td>
+<td headers="a" class="gt_row gt_right">264</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">SEGOMA</td>
+<td headers="a" class="gt_row gt_right">349</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HEDI</td>
+<td headers="a" class="gt_row gt_right">152</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KWASINDI</td>
+<td headers="a" class="gt_row gt_right">116</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MTANGO</td>
+<td headers="a" class="gt_row gt_right">170</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PANDE JWTZ</td>
+<td headers="a" class="gt_row gt_right">237</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">USHONGO</td>
+<td headers="a" class="gt_row gt_right">70</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ST. JOSEPH</td>
+<td headers="a" class="gt_row gt_right">58</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<ul>
+<li>we have 12 facilities</li>
+</ul>
+</section>
+<section id="order-quantity-vs-amc" class="level4">
+<h4 class="anchored" data-anchor-id="order-quantity-vs-amc">Order Quantity Vs AMC</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">log</span>(order_quantity), <span class="fu">log</span>(amc))) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="amc-per-status" class="level4">
+<h4 class="anchored" data-anchor-id="amc-per-status">AMC per status</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(status, amc)) <span class="sc">+</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_jitter(aes(color = status), alpha = 0.1) +</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Boxplots for AMC vs Product Status"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average Monthly Consumption"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="order-quantity-vs-status" class="level4">
+<h4 class="anchored" data-anchor-id="order-quantity-vs-status">Order Quantity vs Status</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(status, order_quantity)) <span class="sc">+</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_jitter(aes(color = status), alpha = 0.1) +</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Boxplots for Order Quantity  vs Product Status"</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Order Quantity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="most-ordered-products" class="level4">
+<h4 class="anchored" data-anchor-id="most-ordered-products">Most Ordered Products</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(product) <span class="sc">|&gt;</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_orders =</span> <span class="fu">sum</span>(order_quantity)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_orders)) <span class="sc">|&gt;</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">6</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(product) <span class="ot">-&gt;</span> top_ordered_products</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(product) <span class="sc">|&gt;</span> </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_orders =</span> <span class="fu">sum</span>(order_quantity)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_orders)) <span class="sc">|&gt;</span> </span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">6</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div id="rhtemsrkwt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#rhtemsrkwt) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#rhtemsrkwt) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#rhtemsrkwt) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#rhtemsrkwt) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#rhtemsrkwt) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#rhtemsrkwt) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#rhtemsrkwt) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#rhtemsrkwt) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#rhtemsrkwt) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#rhtemsrkwt) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#rhtemsrkwt) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#rhtemsrkwt) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#rhtemsrkwt) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#rhtemsrkwt) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#rhtemsrkwt) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#rhtemsrkwt) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#rhtemsrkwt) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#rhtemsrkwt) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#rhtemsrkwt) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#rhtemsrkwt) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#rhtemsrkwt) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#rhtemsrkwt) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#rhtemsrkwt) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#rhtemsrkwt) .gt_left {
+  text-align: left;
+}
+
+:where(#rhtemsrkwt) .gt_center {
+  text-align: center;
+}
+
+:where(#rhtemsrkwt) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#rhtemsrkwt) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#rhtemsrkwt) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#rhtemsrkwt) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#rhtemsrkwt) .gt_super {
+  font-size: 65%;
+}
+
+:where(#rhtemsrkwt) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#rhtemsrkwt) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#rhtemsrkwt) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#rhtemsrkwt) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#rhtemsrkwt) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#rhtemsrkwt) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#rhtemsrkwt) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="product">product</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="total_orders">total_orders</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="product" class="gt_row gt_left">Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD) Tablet (300/300/50) mg</td>
+<td headers="total_orders" class="gt_row gt_right">26358865</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">Paracetamol Tablet 500 mg</td>
+<td headers="total_orders" class="gt_row gt_right">17477484</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">Amoxicillin Capsule 250 mg</td>
+<td headers="total_orders" class="gt_row gt_right">14705835</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">AMOXICILLIN 250MG CAPSULES Capsule 250 mg</td>
+<td headers="total_orders" class="gt_row gt_right">10763707</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">PARACETAMOL 500MG TABLETS Tablet 500 mg</td>
+<td headers="total_orders" class="gt_row gt_right">9460388</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">Ferrous Sulphate + Folic Acid Tablet 200+0.25 mg</td>
+<td headers="total_orders" class="gt_row gt_right">8360749</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="total-orders-over-time-with-outliers-replaced-by-median" class="level4">
+<h4 class="anchored" data-anchor-id="total-orders-over-time-with-outliers-replaced-by-median">total orders over time with outliers replaced by median</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(product <span class="sc">%in%</span> top_ordered_products)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>df_subset<span class="sc">$</span>order_quantity <span class="ot">&lt;-</span> <span class="fu">replace_outliers_with_median</span>(df_subset<span class="sc">$</span>order_quantity)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>df_subset <span class="sc">|&gt;</span> </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(product, year, month_range) <span class="sc">|&gt;</span> </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_orders =</span> <span class="fu">sum</span>(order_quantity), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month_range, total_orders, <span class="at">color =</span> product)) <span class="sc">+</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> product)) <span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> year, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_text(aes(label = product)) +</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>number) <span class="sc">+</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Product"</span>,</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">str_sub</span>(x, <span class="dv">1</span>, <span class="dv">20</span>)) <span class="sc">+</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theme(legend.position = "none")+</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<!-- #### AMC along the reporting periods faceted by status -->
+<!-- ```{r} -->
+<!-- ggplot(df) + -->
+<!--  aes(x = month_range, y = amc, fill = group, colour = group) + -->
+<!--  geom_col() + -->
+<!--  scale_fill_hue(direction = 1) + -->
+<!--  scale_color_hue(direction = 1) + -->
+<!--  theme_minimal() + -->
+<!--  theme(legend.position = "right") + -->
+<!--    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + -->
+<!--  facet_wrap(vars(status),  -->
+<!--  scales = "free_y", ncol = 1L) -->
+<!-- ``` -->
+<ul>
+<li>we have 1303 products</li>
+<li>some products do not span throughout the time frame, which is most likely due to the data quality issue</li>
+</ul>
+</section>
+</section>
+<section id="sample-modelling" class="level3">
+<h3 class="anchored" data-anchor-id="sample-modelling">Sample modelling</h3>
+<section id="subsetting-for-modelling" class="level4">
+<h4 class="anchored" data-anchor-id="subsetting-for-modelling">Subsetting for modelling</h4>
+<p>Now we focus on the business problem. that is to forecast the amc so as to calculate the amount needed to restock to 4 months. We are going to inspect the time series for the amc reported by group A on Paracetamol use</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df_selected <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(product <span class="sc">==</span> <span class="st">"Paracetamol Tablet 500 mg"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">==</span> <span class="st">"a"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># summarize the records for the selected group for reporting</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>df_selected <span class="ot">&lt;-</span> df_selected <span class="sc">|&gt;</span> </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(group, month_range, year) <span class="sc">|&gt;</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_amc =</span> <span class="fu">sum</span>(amc)) <span class="sc">|&gt;</span> </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, month_range)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co"># replace outliers with median</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>df_selected<span class="sc">$</span>amc <span class="ot">&lt;-</span> <span class="fu">replace_outliers_with_median</span>(df_selected<span class="sc">$</span>amc)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># creating time series object</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>ts_selected <span class="ot">&lt;-</span> <span class="fu">ts</span>(df_selected<span class="sc">$</span>total_amc, <span class="at">frequency =</span> <span class="dv">6</span>, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">2020</span>, <span class="fl">2.5</span>))</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggAcf</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Box.test</span>(ts_selected, <span class="at">type =</span> <span class="st">"Lj"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Box-Ljung test
+
+data:  ts_selected
+X-squared = 1.294, df = 1, p-value = 0.2553</code></pre>
+</div>
+</div>
+<p>The data seems to be mostly random white noise as the p-value and the Auto Correlation Function graph may suggest, so the amc as it is can not be used in for forecasting. Atleast for the data selected. We might need to consider taking a different dataset to do the forecasting instead of the R&amp;R reports, or after validating that we have all the data</p>
+</section>
+<section id="sample-model-comparison" class="level4">
+<h4 class="anchored" data-anchor-id="sample-model-comparison">Sample model comparison</h4>
+</section>
+<section id="inspecting-an-arima-model-fitted-to-the-data-selected" class="level4">
+<h4 class="anchored" data-anchor-id="inspecting-an-arima-model-fitted-to-the-data-selected">Inspecting an Arima model fitted to the data selected</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(ts_selected)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">checkresiduals</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,0,0) with non-zero mean
+Q* = 1.8588, df = 3, p-value = 0.6022
+
+Model df: 0.   Total lags used: 3</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: ts_selected 
+ARIMA(0,0,0) with non-zero mean 
+
+Coefficients:
+           mean
+      474482.00
+s.e.   77171.06
+
+sigma^2 = 7.797e+10:  log likelihood = -166.98
+AIC=337.96   AICc=339.3   BIC=338.93
+
+Training set error measures:
+                        ME     RMSE      MAE       MPE     MAPE      MASE
+Training set -2.328306e-10 267335.2 209753.8 -13194.34 13221.03 0.5133514
+                   ACF1
+Training set -0.2910769</code></pre>
+</div>
+</div>
+</section>
+<section id="arima-model-on-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="arima-model-on-the-data">arima model on the data</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># seperate the data into a training set and a test set so as to validate our forecasts</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">subset</span>(ts_selected, <span class="at">end =</span> (<span class="fu">length</span>(ts_selected) <span class="sc">-</span> <span class="dv">3</span>))</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#train our model and check accuracy for the predicted 3 following reporting periods</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>() <span class="sc">|&gt;</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        ME     RMSE      MAE          MPE        MAPE      MASE
+Training set -1.228781e-10 250388.3 199416.0    -41.28434    65.57379 0.5321709
+Test set     -1.166102e+05 318102.5 260202.5 -55920.74614 55940.71662 0.6943888
+                   ACF1 Theil's U
+Training set -0.2123361        NA
+Test set     -0.4194602 0.7227707</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>() <span class="sc">|&gt;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="ets-model-on-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="ets-model-on-the-data">ETS model on the data</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      ME     RMSE      MAE          MPE        MAPE      MASE
+Training set   -6425.286 250482.7 200141.9    -43.08957    66.55662 0.5341082
+Test set     -123012.579 320504.8 262336.6 -56632.89898 56652.27584 0.7000840
+                   ACF1 Theil's U
+Training set -0.2123510        NA
+Test set     -0.4194602 0.7220864</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>() <span class="sc">|&gt;</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="arima-model-with-212" class="level4">
+<h4 class="anchored" data-anchor-id="arima-model-with-212">Arima model with (2,1,2)</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Arima</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">include.constant =</span> T) <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    ME     RMSE       MAE          MPE        MAPE      MASE
+Training set -10677.33 129864.8  86999.26    -10.52668    18.10931 0.2321703
+Test set      38915.22 319107.9 274810.48 -31144.09450 31187.72672 0.7333723
+                   ACF1 Theil's U
+Training set -0.2329040        NA
+Test set     -0.6191863  0.961136</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Arima</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">include.constant =</span> T) <span class="sc">|&gt;</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<p>ps: Arima(2,1,2) means we are using 2 autoregressive terms, 1 differentiation applied and 2 moving average terms in the model</p>
+<section id="using-box-cox-transformation" class="level5">
+<h5 class="anchored" data-anchor-id="using-box-cox-transformation">using box cox transformation</h5>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BoxCox.lambda</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>(<span class="at">lambda =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    ME     RMSE      MAE          MPE        MAPE      MASE
+Training set  -11469.8 250662.4 200702.2    -44.50459    67.32457 0.5356033
+Test set     -128054.6 322473.6 264017.3 -57193.73840 57212.64777 0.7045691
+                   ACF1 Theil's U
+Training set -0.2123541        NA
+Test set     -0.4194602 0.7217496</code></pre>
+</div>
+</div>
+<p>lambda = 1 makes no difference as the time series is white noise</p>
+</section>
+</section>
+<section id="ets-using-log-transformation" class="level4">
+<h4 class="anchored" data-anchor-id="ets-using-log-transformation">ets using log transformation</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#log transform the data using lambda = 0</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    ME     RMSE    MAE          MPE        MAPE      MASE
+Training set  70382.75 260101.8 193454    -21.54275    55.27995 0.5162606
+Test set     -46200.54 299542.5 242416 -48088.87059 48116.65591 0.6469229
+                   ACF1 Theil's U
+Training set -0.2123538        NA
+Test set     -0.4194602 0.7487814</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="arima-using-log-transformation" class="level4">
+<h4 class="anchored" data-anchor-id="arima-using-log-transformation">arima using log transformation</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#log transform the data using lambda = 0</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    ME     RMSE      MAE          MPE        MAPE      MASE
+Training set  70424.15 260103.5 193446.5    -21.52829    55.27101 0.5162405
+Test set     -46186.07 299540.3 242420.9 -48087.26164 48115.05048 0.6469358
+                   ACF1 Theil's U
+Training set -0.2123361        NA
+Test set     -0.4194602 0.7487901</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting-version-2_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<ul>
+<li>Using the new data we can see that the column names are also not consistent so this method would made more sense with a consistent API</li>
+<li>we do not have facility type when mbonea downloads the data</li>
+</ul>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

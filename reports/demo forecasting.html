@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Peter Boshe">
+
+<title>Forecasting for Tanga Sample Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="demo forecasting_files/libs/clipboard/clipboard.min.js"></script>
+<script src="demo forecasting_files/libs/quarto-html/quarto.js"></script>
+<script src="demo forecasting_files/libs/quarto-html/popper.min.js"></script>
+<script src="demo forecasting_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="demo forecasting_files/libs/quarto-html/anchor.min.js"></script>
+<link href="demo forecasting_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="demo forecasting_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="demo forecasting_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="demo forecasting_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="demo forecasting_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#business-problems" id="toc-business-problems" class="nav-link active" data-scroll-target="#business-problems">Business Problem(s)</a>
+  <ul>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
+  <li><a href="#data-extraction" id="toc-data-extraction" class="nav-link" data-scroll-target="#data-extraction">Data Extraction</a></li>
+  <li><a href="#data-cleaning-and-preprocessing" id="toc-data-cleaning-and-preprocessing" class="nav-link" data-scroll-target="#data-cleaning-and-preprocessing">Data Cleaning and Preprocessing</a>
+  <ul>
+  <li><a href="#pre-processing-the-data" id="toc-pre-processing-the-data" class="nav-link" data-scroll-target="#pre-processing-the-data">Pre-processing the data</a></li>
+  </ul></li>
+  <li><a href="#data-quality" id="toc-data-quality" class="nav-link" data-scroll-target="#data-quality">Data Quality</a>
+  <ul>
+  <li><a href="#check-for-missing-variables" id="toc-check-for-missing-variables" class="nav-link" data-scroll-target="#check-for-missing-variables">Check for missing variables</a></li>
+  <li><a href="#check-for-duplicated-rows" id="toc-check-for-duplicated-rows" class="nav-link" data-scroll-target="#check-for-duplicated-rows">Check for duplicated rows</a></li>
+  <li><a href="#inconsistency-in-naming-periods" id="toc-inconsistency-in-naming-periods" class="nav-link" data-scroll-target="#inconsistency-in-naming-periods">Inconsistency in naming periods</a></li>
+  <li><a href="#inconsistency-in-naming-products-and-product-codes" id="toc-inconsistency-in-naming-products-and-product-codes" class="nav-link" data-scroll-target="#inconsistency-in-naming-products-and-product-codes">Inconsistency in naming products and product codes</a></li>
+  <li><a href="#checking-completeness-of-data" id="toc-checking-completeness-of-data" class="nav-link" data-scroll-target="#checking-completeness-of-data">Checking completeness of data</a></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">Exploratory data analysis (EDA)</a>
+  <ul>
+  <li><a href="#distribution-of-amc-and-checking-for-outliers" id="toc-distribution-of-amc-and-checking-for-outliers" class="nav-link" data-scroll-target="#distribution-of-amc-and-checking-for-outliers">Distribution of amc and checking for outliers</a></li>
+  <li><a href="#create-a-function-for-replacing-outliers-with-median" id="toc-create-a-function-for-replacing-outliers-with-median" class="nav-link" data-scroll-target="#create-a-function-for-replacing-outliers-with-median">Create a function for replacing outliers with median</a></li>
+  <li><a href="#imbalance-in-distribution-of-facilities" id="toc-imbalance-in-distribution-of-facilities" class="nav-link" data-scroll-target="#imbalance-in-distribution-of-facilities">Imbalance in distribution of facilities</a></li>
+  <li><a href="#order-quantity-vs-amc" id="toc-order-quantity-vs-amc" class="nav-link" data-scroll-target="#order-quantity-vs-amc">Order Quantity Vs AMC</a></li>
+  <li><a href="#amc-per-status" id="toc-amc-per-status" class="nav-link" data-scroll-target="#amc-per-status">AMC per status</a></li>
+  <li><a href="#order-quantity-vs-status" id="toc-order-quantity-vs-status" class="nav-link" data-scroll-target="#order-quantity-vs-status">Order Quantity vs Status</a></li>
+  <li><a href="#most-ordered-products" id="toc-most-ordered-products" class="nav-link" data-scroll-target="#most-ordered-products">Most Ordered Products</a></li>
+  <li><a href="#total-orders-over-time-with-outliers-replaced-by-median" id="toc-total-orders-over-time-with-outliers-replaced-by-median" class="nav-link" data-scroll-target="#total-orders-over-time-with-outliers-replaced-by-median">total orders over time with outliers replaced by median</a></li>
+  </ul></li>
+  <li><a href="#sample-modelling" id="toc-sample-modelling" class="nav-link" data-scroll-target="#sample-modelling">Sample modelling</a>
+  <ul>
+  <li><a href="#subsetting-for-modelling" id="toc-subsetting-for-modelling" class="nav-link" data-scroll-target="#subsetting-for-modelling">Subsetting for modelling</a></li>
+  <li><a href="#sample-model-comparison" id="toc-sample-model-comparison" class="nav-link" data-scroll-target="#sample-model-comparison">Sample model comparison</a></li>
+  <li><a href="#inspecting-an-arima-model-fitted-to-the-data-selected" id="toc-inspecting-an-arima-model-fitted-to-the-data-selected" class="nav-link" data-scroll-target="#inspecting-an-arima-model-fitted-to-the-data-selected">Inspecting an Arima model fitted to the data selected</a></li>
+  <li><a href="#arima-model-on-the-data" id="toc-arima-model-on-the-data" class="nav-link" data-scroll-target="#arima-model-on-the-data">arima model on the data</a></li>
+  <li><a href="#ets-model-on-the-data" id="toc-ets-model-on-the-data" class="nav-link" data-scroll-target="#ets-model-on-the-data">ETS model on the data</a></li>
+  <li><a href="#arima-model-with-212" id="toc-arima-model-with-212" class="nav-link" data-scroll-target="#arima-model-with-212">Arima model with (2,1,2)</a>
+  <ul class="collapse">
+  <li><a href="#using-box-cox-transformation" id="toc-using-box-cox-transformation" class="nav-link" data-scroll-target="#using-box-cox-transformation">using box cox transformation</a></li>
+  </ul></li>
+  <li><a href="#ets-using-log-transformation" id="toc-ets-using-log-transformation" class="nav-link" data-scroll-target="#ets-using-log-transformation">ets using log transformation</a></li>
+  <li><a href="#arima-using-log-transformation" id="toc-arima-using-log-transformation" class="nav-link" data-scroll-target="#arima-using-log-transformation">arima using log transformation</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Forecasting for Tanga Sample Data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Peter Boshe </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="business-problems" class="level2">
+<h2 class="anchored" data-anchor-id="business-problems">Business Problem(s)</h2>
+<ul>
+<li>forecast the amc so as to calculate the amount needed to restock to 4 months</li>
+<li>forecast the amount of product to be ordered</li>
+</ul>
+<p>Assumptions;</p>
+<ul>
+<li>95% confidence interval</li>
+</ul>
+<section id="methodology" class="level3">
+<h3 class="anchored" data-anchor-id="methodology">Methodology</h3>
+<p>Things to do;</p>
+<ul>
+<li>we will be forecasting for amc</li>
+<li>use other variables to check for outliers and other analysis</li>
+<li>Forecasting will be done for different levels
+<ul>
+<li>by individual group</li>
+<li>by facility</li>
+<li>by facility types</li>
+<li>by different ordering periods(bi-monthly, in 4 month aggregates, annually)</li>
+</ul></li>
+<li>Build a demo shiny app UI with user interactivity</li>
+</ul>
+</section>
+<section id="data-extraction" class="level3">
+<h3 class="anchored" data-anchor-id="data-extraction">Data Extraction</h3>
+<p>We downloaded our data from eLMIS R&amp;R bi-monthly reports for Tanga region for the years 2020 to 2022, the records start from the march-april reporting period.</p>
+<div class="cell">
+
+</div>
+</section>
+<section id="data-cleaning-and-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-and-preprocessing">Data Cleaning and Preprocessing</h3>
+<section id="pre-processing-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="pre-processing-the-data">Pre-processing the data</h4>
+<p>During the pre-processing process we;</p>
+<ul>
+<li>selected the columns of interest,</li>
+<li>clean the white spaces and ensure that all the monthly data have uniform spelling</li>
+<li>performed factor ordering to make sure that the months are ordered chronologically</li>
+</ul>
+<div class="cell">
+
+</div>
+</section>
+</section>
+<section id="data-quality" class="level3">
+<h3 class="anchored" data-anchor-id="data-quality">Data Quality</h3>
+<p>Due to the nature of the data received, The R&amp;R reports seem to have a lot of inconsistency that may be caused by the human element of data recording leading to having multiple strings indicating the same data points.</p>
+<!-- #### Summary of the processed data -->
+<!-- ```{r} -->
+<!-- df |>  -->
+<!--   skimr::skim() -->
+<!-- ``` -->
+<section id="check-for-missing-variables" class="level4">
+<h4 class="anchored" data-anchor-id="check-for-missing-variables">Check for missing variables</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check for missing variables</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vis_miss</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/missing-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="check-for-duplicated-rows" class="level4">
+<h4 class="anchored" data-anchor-id="check-for-duplicated-rows">Check for duplicated rows</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check for duplicates</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">duplicated</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<ul>
+<li>we do not have missing data</li>
+<li>we do not have duplicated data</li>
+</ul>
+</section>
+<section id="inconsistency-in-naming-periods" class="level4">
+<h4 class="anchored" data-anchor-id="inconsistency-in-naming-periods">Inconsistency in naming periods</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_imported <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">separate</span>(period, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"month_range"</span>,<span class="st">"ext_year"</span>), <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">s(?=[^</span><span class="sc">\\</span><span class="st">s]+$)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(month_range)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+   month_range       n
+   &lt;chr&gt;         &lt;int&gt;
+ 1 April - May     570
+ 2 Aug - Sept      649
+ 3 Dec - Jan       693
+ 4 Feb - March     547
+ 5 Jan - Feb      2019
+ 6 July - Aug     1721
+ 7 July - August  1266
+ 8 June - July     564
+ 9 March - April  2698
+10 May - June     2818
+11 Nov - Dec      1570
+12 Nov -Dec       1789
+13 Oct - Nov       660
+14 Sept - Oct     3145</code></pre>
+</div>
+</div>
+<ul>
+<li>we have a data quality issue where the time periods do not have a uniform conventional naming structure</li>
+<li>before cleaning we have 14 period ranges due to data recording</li>
+</ul>
+</section>
+<section id="inconsistency-in-naming-products-and-product-codes" class="level4">
+<h4 class="anchored" data-anchor-id="inconsistency-in-naming-products-and-product-codes">Inconsistency in naming products and product codes</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_imported <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(product, <span class="st">"Tenofovir"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(product, product_code)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  product                                                           product_code
+  &lt;chr&gt;                                                             &lt;chr&gt;       
+1 Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD) Tabl… 10011380AB  
+2 Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD) Tabl… 10010022AB  
+3 Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD)..B/9… 10011380AB  
+4 Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD)..P/9… 10011380AB  
+5 Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD)..P/3… 10010022AB  </code></pre>
+</div>
+</div>
+<ul>
+<li>there is a possibility that the product codes might be changed</li>
+<li>there is a possibility of duplicates by renaming the same products</li>
+<li>there is no consistency in product coding and naming (ie. same product name might have different product code like 10011380AB, 10010022AB both named Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD) Tablet (300/300/50) mg )</li>
+</ul>
+</section>
+<section id="checking-completeness-of-data" class="level4">
+<h4 class="anchored" data-anchor-id="checking-completeness-of-data">Checking completeness of data</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(facility) <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div id="fsndzbtsvj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#fsndzbtsvj) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#fsndzbtsvj) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#fsndzbtsvj) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#fsndzbtsvj) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#fsndzbtsvj) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#fsndzbtsvj) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#fsndzbtsvj) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#fsndzbtsvj) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#fsndzbtsvj) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#fsndzbtsvj) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#fsndzbtsvj) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#fsndzbtsvj) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#fsndzbtsvj) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#fsndzbtsvj) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#fsndzbtsvj) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#fsndzbtsvj) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#fsndzbtsvj) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#fsndzbtsvj) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#fsndzbtsvj) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#fsndzbtsvj) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#fsndzbtsvj) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#fsndzbtsvj) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#fsndzbtsvj) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#fsndzbtsvj) .gt_left {
+  text-align: left;
+}
+
+:where(#fsndzbtsvj) .gt_center {
+  text-align: center;
+}
+
+:where(#fsndzbtsvj) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#fsndzbtsvj) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#fsndzbtsvj) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#fsndzbtsvj) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#fsndzbtsvj) .gt_super {
+  font-size: 65%;
+}
+
+:where(#fsndzbtsvj) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#fsndzbtsvj) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#fsndzbtsvj) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#fsndzbtsvj) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#fsndzbtsvj) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#fsndzbtsvj) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#fsndzbtsvj) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="facility">facility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="facility" class="gt_row gt_center">BUMBULI MISSION</td>
+<td headers="n" class="gt_row gt_right">670</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HANDENI TC</td>
+<td headers="n" class="gt_row gt_right">2277</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILINDI</td>
+<td headers="n" class="gt_row gt_right">1967</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KOROGWE TC</td>
+<td headers="n" class="gt_row gt_right">2622</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LUSHOTO</td>
+<td headers="n" class="gt_row gt_right">3151</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MUHEZA</td>
+<td headers="n" class="gt_row gt_right">892</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MUHEZA DISTRICT</td>
+<td headers="n" class="gt_row gt_right">346</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PANGANI</td>
+<td headers="n" class="gt_row gt_right">1734</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ST. FRANCIS KWAMKONO</td>
+<td headers="n" class="gt_row gt_right">478</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ST. RAPHAEL</td>
+<td headers="n" class="gt_row gt_right">511</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TANGA</td>
+<td headers="n" class="gt_row gt_right">4253</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TANGA CITY</td>
+<td headers="n" class="gt_row gt_right">1808</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<ul>
+<li>for data quality checks we need to confirm that the number of facilities match the reality</li>
+</ul>
+</section>
+</section>
+<section id="exploratory-data-analysis-eda" class="level3">
+<h3 class="anchored" data-anchor-id="exploratory-data-analysis-eda">Exploratory data analysis (EDA)</h3>
+<section id="distribution-of-amc-and-checking-for-outliers" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-of-amc-and-checking-for-outliers">Distribution of amc and checking for outliers</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check for outliers</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(amc)) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/eda-1.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">log</span>(amc))) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/eda-2.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Tukey's method to numeric columns</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># amc_outliers &lt;- boxplot.stats(df$amc, coef = 1.5)$out</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify which rows contain outliers</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># amc_outlier_rows &lt;- apply(df, 1, function(row) any(row %in% amc_outliers))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li>we can see that the distribution of the amc is heavily right skewed</li>
+<li>we might need to do some transformation for better forecasting, eg log transformation</li>
+<li>we have 6549 outliers and 14160 when the amc outliers are filtered out.</li>
+</ul>
+</section>
+<section id="create-a-function-for-replacing-outliers-with-median" class="level4">
+<h4 class="anchored" data-anchor-id="create-a-function-for-replacing-outliers-with-median">Create a function for replacing outliers with median</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create a function that replaces outliers with median values</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>replace_outliers_with_median <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">coef =</span> <span class="fl">1.5</span>) {</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  q1 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.25</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  q3 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(x, <span class="fl">0.75</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  iqr <span class="ot">&lt;-</span> q3 <span class="sc">-</span> q1</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  fence_low <span class="ot">&lt;-</span> q1 <span class="sc">-</span> coef <span class="sc">*</span> iqr</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  fence_high <span class="ot">&lt;-</span> q3 <span class="sc">+</span> coef <span class="sc">*</span> iqr</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  x[x <span class="sc">&lt;</span> fence_low <span class="sc">|</span> x <span class="sc">&gt;</span> fence_high] <span class="ot">&lt;-</span> <span class="fu">median</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="imbalance-in-distribution-of-facilities" class="level4">
+<h4 class="anchored" data-anchor-id="imbalance-in-distribution-of-facilities">Imbalance in distribution of facilities</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">tabyl</span>(facility, group) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div id="lufuoavmuj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#lufuoavmuj) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#lufuoavmuj) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#lufuoavmuj) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#lufuoavmuj) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#lufuoavmuj) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#lufuoavmuj) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#lufuoavmuj) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#lufuoavmuj) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#lufuoavmuj) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#lufuoavmuj) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#lufuoavmuj) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#lufuoavmuj) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#lufuoavmuj) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#lufuoavmuj) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#lufuoavmuj) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#lufuoavmuj) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#lufuoavmuj) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#lufuoavmuj) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#lufuoavmuj) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#lufuoavmuj) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#lufuoavmuj) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#lufuoavmuj) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#lufuoavmuj) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#lufuoavmuj) .gt_left {
+  text-align: left;
+}
+
+:where(#lufuoavmuj) .gt_center {
+  text-align: center;
+}
+
+:where(#lufuoavmuj) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#lufuoavmuj) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#lufuoavmuj) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#lufuoavmuj) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#lufuoavmuj) .gt_super {
+  font-size: 65%;
+}
+
+:where(#lufuoavmuj) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#lufuoavmuj) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#lufuoavmuj) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#lufuoavmuj) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#lufuoavmuj) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#lufuoavmuj) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#lufuoavmuj) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="facility">facility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a">a</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="b">b</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="facility" class="gt_row gt_center">BUMBULI MISSION</td>
+<td headers="a" class="gt_row gt_right">0</td>
+<td headers="b" class="gt_row gt_right">670</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">HANDENI TC</td>
+<td headers="a" class="gt_row gt_right">2277</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KILINDI</td>
+<td headers="a" class="gt_row gt_right">1967</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">KOROGWE TC</td>
+<td headers="a" class="gt_row gt_right">2622</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">LUSHOTO</td>
+<td headers="a" class="gt_row gt_right">138</td>
+<td headers="b" class="gt_row gt_right">3013</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MUHEZA</td>
+<td headers="a" class="gt_row gt_right">892</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">MUHEZA DISTRICT</td>
+<td headers="a" class="gt_row gt_right">346</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">PANGANI</td>
+<td headers="a" class="gt_row gt_right">1734</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ST. FRANCIS KWAMKONO</td>
+<td headers="a" class="gt_row gt_right">478</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">ST. RAPHAEL</td>
+<td headers="a" class="gt_row gt_right">511</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TANGA</td>
+<td headers="a" class="gt_row gt_right">4253</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="facility" class="gt_row gt_center">TANGA CITY</td>
+<td headers="a" class="gt_row gt_right">1808</td>
+<td headers="b" class="gt_row gt_right">0</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<ul>
+<li>we have 12 facilities</li>
+</ul>
+</section>
+<section id="order-quantity-vs-amc" class="level4">
+<h4 class="anchored" data-anchor-id="order-quantity-vs-amc">Order Quantity Vs AMC</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">log</span>(order_quantity), <span class="fu">log</span>(amc))) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="amc-per-status" class="level4">
+<h4 class="anchored" data-anchor-id="amc-per-status">AMC per status</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(status, amc)) <span class="sc">+</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_jitter(aes(color = status), alpha = 0.1) +</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Boxplots for AMC vs Product Status"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average Monthly Consumption"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="order-quantity-vs-status" class="level4">
+<h4 class="anchored" data-anchor-id="order-quantity-vs-status">Order Quantity vs Status</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(status, order_quantity)) <span class="sc">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_jitter(aes(color = status), alpha = 0.1) +</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Boxplots for Order Quantity  vs Product Status"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Order Quantity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="most-ordered-products" class="level4">
+<h4 class="anchored" data-anchor-id="most-ordered-products">Most Ordered Products</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(product) <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_orders =</span> <span class="fu">sum</span>(order_quantity)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_orders)) <span class="sc">|&gt;</span> </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">6</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(product) <span class="ot">-&gt;</span> top_ordered_products</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(product) <span class="sc">|&gt;</span> </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_orders =</span> <span class="fu">sum</span>(order_quantity)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_orders)) <span class="sc">|&gt;</span> </span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">6</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div id="pbpvveitmp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#pbpvveitmp) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#pbpvveitmp) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#pbpvveitmp) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#pbpvveitmp) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#pbpvveitmp) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#pbpvveitmp) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#pbpvveitmp) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#pbpvveitmp) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#pbpvveitmp) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#pbpvveitmp) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#pbpvveitmp) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#pbpvveitmp) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#pbpvveitmp) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#pbpvveitmp) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#pbpvveitmp) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#pbpvveitmp) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#pbpvveitmp) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#pbpvveitmp) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#pbpvveitmp) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#pbpvveitmp) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#pbpvveitmp) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#pbpvveitmp) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#pbpvveitmp) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#pbpvveitmp) .gt_left {
+  text-align: left;
+}
+
+:where(#pbpvveitmp) .gt_center {
+  text-align: center;
+}
+
+:where(#pbpvveitmp) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#pbpvveitmp) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#pbpvveitmp) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#pbpvveitmp) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#pbpvveitmp) .gt_super {
+  font-size: 65%;
+}
+
+:where(#pbpvveitmp) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#pbpvveitmp) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#pbpvveitmp) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#pbpvveitmp) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#pbpvveitmp) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#pbpvveitmp) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#pbpvveitmp) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="product">product</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="total_orders">total_orders</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="product" class="gt_row gt_left">Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD) Tablet (300/300/50) mg</td>
+<td headers="total_orders" class="gt_row gt_right">14656116</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD)..P/90 Tablet (300/300/50) mg</td>
+<td headers="total_orders" class="gt_row gt_right">6406207</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">AMOXICILLIN 250MG CAPSULES Capsule 250 mg</td>
+<td headers="total_orders" class="gt_row gt_right">4641674</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">Gloves Examination Latex Non-Sterile Disposable Medium each - -</td>
+<td headers="total_orders" class="gt_row gt_right">3877600</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">TENOFOVIR DISOPROXIL FUMARATE 300MG+LAMIVUDINE 300MG+DOLUTEGRAVIR 50MG TABLET Tablet (300/300/50) mg</td>
+<td headers="total_orders" class="gt_row gt_right">1972038</td></tr>
+    <tr><td headers="product" class="gt_row gt_left">Paracetamol Tablet 500 mg</td>
+<td headers="total_orders" class="gt_row gt_right">1923440</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="total-orders-over-time-with-outliers-replaced-by-median" class="level4">
+<h4 class="anchored" data-anchor-id="total-orders-over-time-with-outliers-replaced-by-median">total orders over time with outliers replaced by median</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(product <span class="sc">%in%</span> top_ordered_products)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df_subset<span class="sc">$</span>order_quantity <span class="ot">&lt;-</span> <span class="fu">replace_outliers_with_median</span>(df_subset<span class="sc">$</span>order_quantity)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>df_subset <span class="sc">|&gt;</span> </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(product, year, month_range) <span class="sc">|&gt;</span> </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_orders =</span> <span class="fu">sum</span>(order_quantity), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month_range, total_orders, <span class="at">color =</span> product)) <span class="sc">+</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> product)) <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> year, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_text(aes(label = product)) +</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>number) <span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Product"</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">str_sub</span>(x, <span class="dv">1</span>, <span class="dv">20</span>)) <span class="sc">+</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theme(legend.position = "none")+</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<!-- #### AMC along the reporting periods faceted by status -->
+<!-- ```{r} -->
+<!-- ggplot(df) + -->
+<!--  aes(x = month_range, y = amc, fill = group, colour = group) + -->
+<!--  geom_col() + -->
+<!--  scale_fill_hue(direction = 1) + -->
+<!--  scale_color_hue(direction = 1) + -->
+<!--  theme_minimal() + -->
+<!--  theme(legend.position = "right") + -->
+<!--    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + -->
+<!--  facet_wrap(vars(status),  -->
+<!--  scales = "free_y", ncol = 1L) -->
+<!-- ``` -->
+<ul>
+<li>we have 1303 products</li>
+<li>some products do not span throughout the time frame, which is most likely due to the data quality issue</li>
+</ul>
+</section>
+</section>
+<section id="sample-modelling" class="level3">
+<h3 class="anchored" data-anchor-id="sample-modelling">Sample modelling</h3>
+<section id="subsetting-for-modelling" class="level4">
+<h4 class="anchored" data-anchor-id="subsetting-for-modelling">Subsetting for modelling</h4>
+<p>Now we focus on the business problem. that is to forecast the amc so as to calculate the amount needed to restock to 4 months. We are going to inspect the time series for the amc reported by group A on Paracetamol use</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_selected <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(product <span class="sc">==</span> <span class="st">"Paracetamol Tablet 500 mg"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">==</span> <span class="st">"a"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># summarize the records for the selected group for reporting</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>df_selected <span class="ot">&lt;-</span> df_selected <span class="sc">|&gt;</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(group, month_range, year) <span class="sc">|&gt;</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_amc =</span> <span class="fu">sum</span>(amc)) <span class="sc">|&gt;</span> </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, month_range)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># replace outliers with median</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>df_selected<span class="sc">$</span>amc <span class="ot">&lt;-</span> <span class="fu">replace_outliers_with_median</span>(df_selected<span class="sc">$</span>amc)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># creating time series object</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>ts_selected <span class="ot">&lt;-</span> <span class="fu">ts</span>(df_selected<span class="sc">$</span>total_amc, <span class="at">frequency =</span> <span class="dv">6</span>, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">2020</span>, <span class="fl">2.5</span>))</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggAcf</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="768"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Box.test</span>(ts_selected, <span class="at">type =</span> <span class="st">"Lj"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Box-Ljung test
+
+data:  ts_selected
+X-squared = 0.091664, df = 1, p-value = 0.7621</code></pre>
+</div>
+</div>
+<p>The data seems to be mostly random white noise as the p-value and the Auto Correlation Function graph may suggest, so the amc as it is can not be used in for forecasting. Atleast for the data selected. We might need to consider taking a different dataset to do the forecasting instead of the R&amp;R reports, or after validating that we have all the data</p>
+</section>
+<section id="sample-model-comparison" class="level4">
+<h4 class="anchored" data-anchor-id="sample-model-comparison">Sample model comparison</h4>
+</section>
+<section id="inspecting-an-arima-model-fitted-to-the-data-selected" class="level4">
+<h4 class="anchored" data-anchor-id="inspecting-an-arima-model-fitted-to-the-data-selected">Inspecting an Arima model fitted to the data selected</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(ts_selected)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">checkresiduals</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="768"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ljung-Box test
+
+data:  Residuals from ARIMA(0,0,0) with non-zero mean
+Q* = 1.1482, df = 3, p-value = 0.7655
+
+Model df: 0.   Total lags used: 3</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: ts_selected 
+ARIMA(0,0,0) with non-zero mean 
+
+Coefficients:
+           mean
+      45328.091
+s.e.   4848.376
+
+sigma^2 = 284429038:  log likelihood = -122.15
+AIC=248.29   AICc=249.79   BIC=249.09
+
+Training set error measures:
+                       ME     RMSE      MAE     MPE    MAPE      MASE      ACF1
+Training set -9.92168e-12 16080.17 12697.59 -15.432 33.6615 0.8533898 0.0800628</code></pre>
+</div>
+</div>
+</section>
+<section id="arima-model-on-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="arima-model-on-the-data">arima model on the data</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># seperate the data into a training set and a test set so as to validate our forecasts</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">subset</span>(ts_selected, <span class="at">end =</span> (<span class="fu">length</span>(ts_selected) <span class="sc">-</span> <span class="dv">3</span>))</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#train our model and check accuracy for the predicted 3 following reporting periods</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>() <span class="sc">|&gt;</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        ME     RMSE      MAE        MPE     MAPE      MASE
+Training set -7.275958e-12 15007.33 13816.41  -8.452252 28.16720 0.6281184
+Test set     -1.780913e+04 20832.90 17809.13 -79.397165 79.39716 0.8096345
+                   ACF1 Theil's U
+Training set -0.1213509        NA
+Test set     -0.6117700 0.9278664</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>() <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="ets-model-on-the-data" class="level4">
+<h4 class="anchored" data-anchor-id="ets-model-on-the-data">ETS model on the data</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>() <span class="sc">|&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       ME     RMSE      MAE        MPE     MAPE      MASE
+Training set    -12.01993 15008.08 13820.01  -8.478673 28.18121 0.6282821
+Test set     -17820.34678 20842.50 17820.35 -79.437279 79.43728 0.8101446
+                   ACF1 Theil's U
+Training set -0.1213537        NA
+Test set     -0.6117700 0.9284069</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>() <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="arima-model-with-212" class="level4">
+<h4 class="anchored" data-anchor-id="arima-model-with-212">Arima model with (2,1,2)</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Arima</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">include.constant =</span> T) <span class="sc">|&gt;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     ME     RMSE       MAE        MPE     MAPE      MASE
+Training set  -537.8421 13207.67  9516.429  -7.388811 19.99085 0.4326338
+Test set     -1101.9336 16465.87 15079.956 -28.101341 63.15678 0.6855616
+                    ACF1 Theil's U
+Training set  0.01756472        NA
+Test set     -0.66304774 0.6374388</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Arima</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">include.constant =</span> T) <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<p>ps: Arima(2,1,2) means we are using 2 autoregressive terms, 1 differentiation applied and 2 moving average terms in the model</p>
+<section id="using-box-cox-transformation" class="level5">
+<h5 class="anchored" data-anchor-id="using-box-cox-transformation">using box cox transformation</h5>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BoxCox.lambda</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>(<span class="at">lambda =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      ME     RMSE      MAE        MPE     MAPE      MASE
+Training set   -392.8384 15043.52 13938.07  -9.319673 28.63424 0.6336496
+Test set     -18160.9190 21134.43 18160.92 -80.654726 80.65473 0.8256277
+                   ACF1 Theil's U
+Training set -0.1215326        NA
+Test set     -0.6117700 0.9448315</code></pre>
+</div>
+</div>
+<p>lambda = 1 makes no difference as the time series is white noise</p>
+</section>
+</section>
+<section id="ets-using-log-transformation" class="level4">
+<h4 class="anchored" data-anchor-id="ets-using-log-transformation">ets using log transformation</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#log transform the data using lambda = 0</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     ME     RMSE      MAE        MPE     MAPE      MASE
+Training set   2071.537 15150.29 13299.03  -3.975976 25.97368 0.6045976
+Test set     -15736.879 19091.73 15736.88 -71.989492 71.98949 0.7154265
+                   ACF1 Theil's U
+Training set -0.1213521        NA
+Test set     -0.6117700 0.8289112</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ets</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="arima-using-log-transformation" class="level4">
+<h4 class="anchored" data-anchor-id="arima-using-log-transformation">arima using log transformation</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#log transform the data using lambda = 0</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(ts_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     ME     RMSE      MAE        MPE     MAPE      MASE
+Training set   2076.267 15150.27 13297.34  -3.965349 25.96755 0.6045207
+Test set     -15732.858 19088.42 15732.86 -71.975118 71.97512 0.7152437
+                   ACF1 Theil's U
+Training set -0.1213509        NA
+Test set     -0.6117700  0.828721</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">auto.arima</span>(<span class="at">lambda =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="demo-forecasting_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

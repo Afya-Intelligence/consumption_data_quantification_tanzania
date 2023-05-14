@@ -1,0 +1,569 @@
+---
+title: "Forecasting for Tanga Sample Data"
+subtitle: "with complete facility data"
+author: "Peter Boshe"
+format: 
+  html:
+    fig-width: 8
+    fig-height: 4
+    code-fold: true
+    toc: true
+    toc-depth: 5
+    toc-location: left
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+## Business Problem(s)
+- forecast the amc so as to calculate the amount needed to restock to 4 months
+- forecast the amount of product to be ordered
+
+Assumptions;
+
+- 95% confidence interval
+
+### Methodology
+
+Things to do;
+
+- we will be forecasting for amc
+- use other variables to check for outliers and other analysis
+- Forecasting will be done for different levels 
+  - by individual group
+  - by facility
+  - by facility types
+  - by different ordering periods(bi-monthly, in 4 month aggregates, annually)
+- Build a demo shiny app UI with user interactivity
+  
+### Data Extraction
+
+We downloaded our data from eLMIS R&R bi-monthly reports for Tanga region for the years
+2020 to 2022, the records start from the march-april reporting period.
+
+
+```{r import}
+#| warning: false
+#| message: false
+#| echo: false
+library(tidyverse)
+library(fpp2)
+library(visdat)
+library(gt)
+
+#import the dataset
+df_path <- here::here("data/tanga_2020_2022.rds")
+df_imported <- read_rds(df_path) |> janitor::clean_names()
+#set theme for all the plots
+theme_set(theme_bw())
+```
+
+
+
+
+### Data Cleaning and Preprocessing
+
+#### Pre-processing the data
+
+During the pre-processing process we;
+
+- selected the columns of interest,
+- clean the white spaces and ensure that all the monthly data have uniform spelling
+- performed factor ordering to make sure that the months are ordered chronologically
+
+
+```{r pre-process}
+#| echo: false
+
+df <- df_imported |> 
+      # change each column to the prefered datatype
+      transmute(
+        line = as.numeric(line_number),
+        facility = as.factor(facility),
+        # facility_type = as.factor(facility_type),
+        district = as.factor(district),
+        zone = as.factor(zone),
+        period = as.character(period),
+        product = product_name,
+        amc = as.numeric(amc),
+        physical_count = as.numeric(physical_count),
+        mos = as.numeric(mos),
+        order_quantity = as.numeric(order_quantity),
+        status = as.factor(status),
+        group = as.factor(group),
+        year = as.factor(year)
+      ) |>
+      separate(period, into = c("month_range","ext_year"), sep = "\\s(?=[^\\s]+$)") |>
+      separate(month_range, into = c("start_month", "end_month"), sep = "-") |>
+      mutate(
+        start_month = trimws(tolower(start_month)),
+        end_month = trimws(tolower(end_month)),
+        start_month = case_when(
+          start_month == "jan" ~ "january",
+          start_month == "feb" ~ "february",
+          start_month == "mar" ~ "march",
+          start_month == "apr" ~ "april",
+          start_month == "may" ~ "may",
+          start_month == "jun" ~ "june",
+          start_month == "jul" ~ "july",
+          start_month == "aug" ~ "august",
+          start_month == "sept" ~ "september",
+          start_month == "oct" ~ "october",
+          start_month == "nov" ~ "november",
+          start_month == "dec" ~ "december",
+          TRUE ~ start_month
+        ),
+        end_month = case_when(
+          end_month == "jan" ~ "january",
+          end_month == "feb" ~ "february",
+          end_month == "mar" ~ "march",
+          end_month == "apr" ~ "april",
+          end_month == "may" ~ "may",
+          end_month == "jun" ~ "june",
+          end_month == "jul" ~ "july",
+          end_month == "aug" ~ "august",
+          end_month == "sept" ~ "september",
+          end_month == "oct" ~ "october",
+          end_month == "nov" ~ "november",
+          end_month == "dec" ~ "december",
+          TRUE ~ end_month
+        )
+      ) |>
+      unite("month_range", c(start_month, end_month), sep = " - ")
+
+    # introduce factor ordering for proper arrangement of the reporting periods
+    #
+    ## Reordering df$month_range
+    df$month_range <- df$month_range %>%
+      fct_relevel(
+        "january - february", "february - march", "march - april",
+        "april - may", "may - june", "june - july", "july - august",
+        "august - september", "september - october", "october - november",
+        "november - december", "december - january"
+      )
+    # rearranging the dataset
+    #
+    df <- df |>
+      arrange(year, facility, month_range)
+    print("pre-process successful...")
+
+
+```
+
+
+
+
+
+
+### Data Quality
+
+Due to the nature of the data received, The R&R reports seem to have a lot of inconsistency that may be caused by the human element of data recording leading to having multiple strings indicating the same data points.
+
+<!-- #### Summary of the processed data -->
+
+<!-- ```{r} -->
+<!-- df |>  -->
+<!--   skimr::skim() -->
+<!-- ``` -->
+
+#### Check for missing variables
+
+```{r missing}
+# check for missing variables
+# df |> 
+#   vis_miss(warn_large_data = F)
+
+sapply(df, function(x) sum(is.na(x)))
+
+df |> filter(is.na(order_quantity))
+
+
+```
+
+#### Check for duplicated rows
+
+```{r duplicates}
+# check for duplicates
+df |> 
+  duplicated() |> 
+  sum()
+
+
+```
+
+- we do not have missing data
+- we do not have duplicated data
+
+
+#### Inconsistency in naming periods
+
+```{r}
+df_imported |> 
+   separate(period, into = c("month_range","ext_year"), sep = "\\s(?=[^\\s]+$)") |>
+  count(month_range)
+
+```
+
+- we have a data quality issue where the time periods do not have a uniform conventional naming structure
+- before cleaning we have 14 period ranges due to data recording
+
+#### Inconsistency in naming products and product codes
+
+```{r}
+df_imported |>
+  filter(str_detect(product_name, "Tenofovir")) |>
+  distinct(product_name, product_code_name) |> 
+  view()
+```
+
+- there is a possibility that the product codes might be changed
+- there is a possibility of duplicates by renaming the same products
+- there is no consistency in product coding and naming (ie. same product name might have different product code like 10011380AB, 10010022AB both named Tenofovir Disoproxil Fumarate +Lamivudine+Doltegravir (TLD) Tablet (300/300/50) mg
+)
+
+#### Checking completeness of data
+
+```{r}
+length(unique(df$facility))
+```
+
+
+- for data quality checks we need to confirm that the number of facilities match the reality 
+- with the new data we have 347 facilities
+
+
+
+
+### Exploratory data analysis (EDA)
+
+#### Distribution of amc and checking for outliers
+
+```{r eda}
+
+# check for outliers
+
+df |> 
+  ggplot(aes(amc)) +
+  geom_boxplot()
+
+df |> 
+  ggplot(aes(log(amc))) +
+  geom_boxplot()
+
+# Apply Tukey's method to numeric columns
+# amc_outliers <- boxplot.stats(df$amc, coef = 1.5)$out
+
+# Identify which rows contain outliers
+# amc_outlier_rows <- apply(df, 1, function(row) any(row %in% amc_outliers))
+
+```
+
+- we can see that the distribution of the amc is heavily right skewed
+- we might need to do some transformation for better forecasting,
+eg log transformation
+- we have 6549 outliers and 14160 when the amc outliers are filtered out. 
+
+#### Create a function for replacing outliers with median
+
+```{r}
+#create a function that replaces outliers with median values
+replace_outliers_with_median <- function(x, coef = 1.5) {
+  q1 <- quantile(x, 0.25)
+  q3 <- quantile(x, 0.75)
+  iqr <- q3 - q1
+  fence_low <- q1 - coef * iqr
+  fence_high <- q3 + coef * iqr
+  x[x < fence_low | x > fence_high] <- median(x, na.rm = TRUE)
+  return(x)
+}
+```
+
+
+#### Imbalance in distribution of facilities
+
+```{r}
+
+df %>%
+  group_by(group) %>%
+  summarize(count = n_distinct(facility)) |> 
+  gt()
+
+```
+
+- we have 12 facilities
+
+#### Order Quantity Vs AMC
+
+```{r}
+df |> 
+  ggplot(aes(log(order_quantity), log(amc))) +
+  geom_point()
+```
+
+
+#### AMC per status
+
+
+```{r}
+df |> 
+  ggplot(aes(status, amc)) + 
+  geom_boxplot(fill = "lightblue") +
+  # geom_jitter(aes(color = status), alpha = 0.1) +
+  scale_y_log10() +
+  labs(title = "Boxplots for AMC vs Product Status",
+       y = "Average Monthly Consumption")
+
+```
+
+#### Order Quantity vs Status
+
+```{r}
+df |> 
+  ggplot(aes(status, order_quantity)) + 
+  geom_boxplot(fill = "lightblue") +
+  # geom_jitter(aes(color = status), alpha = 0.1) +
+  scale_y_log10() +
+  labs(title = "Boxplots for Order Quantity  vs Product Status",
+       y = "Order Quantity")
+```
+
+
+#### Most Ordered Products 
+
+```{r}
+
+df |> 
+  group_by(product) |> 
+  summarise(
+    total_orders = sum(order_quantity)
+  ) |> 
+  arrange(desc(total_orders)) |> 
+  head(6) |> 
+  pull(product) -> top_ordered_products
+
+df |> 
+  group_by(product) |> 
+  summarise(
+    total_orders = sum(order_quantity)
+  ) |> 
+  arrange(desc(total_orders)) |> 
+  head(6) |> 
+  gt::gt()
+
+
+```
+
+#### total orders over time with outliers replaced by median
+
+```{r}
+df_subset <- df |> 
+  filter(product %in% top_ordered_products)
+
+df_subset$order_quantity <- replace_outliers_with_median(df_subset$order_quantity)
+
+
+
+df_subset |> 
+  group_by(product, year, month_range) |> 
+  summarise(total_orders = sum(order_quantity), .groups = "drop") |> 
+  ggplot(aes(month_range, total_orders, color = product)) +
+  geom_line(aes(group = product)) +
+  facet_wrap(~ year, ncol = 1) +
+  # geom_text(aes(label = product)) +
+  scale_y_continuous(labels = scales::number) +
+  scale_color_discrete(name = "Product",
+                       labels = function(x) str_sub(x, 1, 20)) +
+  
+  # theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+<!-- #### AMC along the reporting periods faceted by status -->
+
+<!-- ```{r} -->
+
+<!-- ggplot(df) + -->
+<!--  aes(x = month_range, y = amc, fill = group, colour = group) + -->
+<!--  geom_col() + -->
+<!--  scale_fill_hue(direction = 1) + -->
+<!--  scale_color_hue(direction = 1) + -->
+<!--  theme_minimal() + -->
+<!--  theme(legend.position = "right") + -->
+<!--    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + -->
+<!--  facet_wrap(vars(status),  -->
+<!--  scales = "free_y", ncol = 1L) -->
+
+<!-- ``` -->
+
+
+- we have 1303 products
+- some products do not span throughout the time frame, which is most likely due to the data quality issue
+
+
+
+### Sample modelling
+#### Subsetting for modelling
+
+Now we focus on the business problem. that is to forecast the amc so as to calculate the amount needed to restock to 4 months.
+ We are going to inspect the time series for the amc reported by group A on Paracetamol use
+
+```{r}
+
+df_selected <- df |> 
+  filter(product == "Paracetamol Tablet 500 mg") |> 
+  filter(group == "a")
+
+# summarize the records for the selected group for reporting
+df_selected <- df_selected |> 
+  group_by(group, month_range, year) |>
+  summarise(total_amc = sum(amc)) |> 
+  arrange(year, month_range)
+
+# replace outliers with median
+df_selected$amc <- replace_outliers_with_median(df_selected$amc)
+
+# creating time series object
+ts_selected <- ts(df_selected$total_amc, frequency = 6, start = c(2020, 2.5))
+
+autoplot(ts_selected)
+ggAcf(ts_selected)
+Box.test(ts_selected, type = "Lj")
+```
+
+The data seems to be mostly random white noise as the p-value and the Auto Correlation Function graph may suggest, so the amc as it is can not be used in for forecasting. Atleast for the data selected.
+We might need to consider taking a different dataset to do the forecasting instead of the R&R reports, or after validating that we have all the data
+
+
+
+
+
+
+
+
+
+#### Sample model comparison
+
+
+
+
+
+
+
+#### Inspecting an Arima model fitted to the data selected
+
+```{r}
+fit <- auto.arima(ts_selected)
+checkresiduals(fit)
+summary(fit)
+```
+
+#### arima model on the data
+
+```{r}
+# seperate the data into a training set and a test set so as to validate our forecasts
+train <- subset(ts_selected, end = (length(ts_selected) - 3))
+#train our model and check accuracy for the predicted 3 following reporting periods
+train |>
+  auto.arima() |>
+  forecast(h = 3) |>
+  accuracy(ts_selected)
+
+train |>
+  auto.arima() |>
+  forecast(h = 10) |>
+  autoplot()
+```
+
+#### ETS model on the data
+
+```{r}
+train |>
+  ets() |>
+  forecast(h = 3) |>
+  accuracy(ts_selected)
+
+train |>
+  ets() |>
+  forecast(h = 10) |>
+  autoplot()
+```
+
+
+#### Arima model with (2,1,2)
+
+```{r}
+train |>
+  Arima(order = c(2,1,2), include.constant = T) |>
+  forecast(h = 3) |>
+  accuracy(ts_selected)
+
+train |>
+  Arima(order = c(2,1,2), include.constant = T) |>
+  forecast(h = 10) |>
+  autoplot()
+```
+
+ps: Arima(2,1,2) means we are using 2 autoregressive terms, 1 differentiation applied and 2 moving average terms in the model
+
+##### using box cox transformation
+
+```{r}
+BoxCox.lambda(ts_selected)
+
+train |>
+  ets(lambda = 1) |>
+  forecast(h = 3) |>
+  accuracy(ts_selected)
+```
+
+lambda = 1 makes no difference as the time series is white noise
+
+#### ets using log transformation
+
+```{r}
+train |>
+  #log transform the data using lambda = 0
+  ets(lambda = 0) |>
+  forecast(h = 3) |>
+  accuracy(ts_selected)
+
+train |>
+  ets(lambda = 0) |>
+  forecast(h = 10) |>
+  autoplot()
+
+```
+
+#### arima using log transformation
+
+```{r}
+
+train |>
+  #log transform the data using lambda = 0
+  auto.arima(lambda = 0) |>
+  forecast(h = 3) |>
+  accuracy(ts_selected)
+
+train |>
+  auto.arima(lambda = 0) |>
+  forecast(h = 10) |>
+  autoplot()
+```
+
+
+ - Using the new data we can see that the column names are also not consistent so this method would made more sense with a consistent API
+- we do not have facility type when mbonea downloads the data
+
+
+
+
+
+
+
+
+
